@@ -1,0 +1,485 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ProLink | Premium Student Talent</title>
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;500;700&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+    
+    <!-- FontAwesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        proPurple: '#6A00FF',
+                        proBlack: '#050505',
+                        proCard: '#1A1A1A',
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        display: ['Space Grotesk', 'sans-serif'],
+                    },
+                    boxShadow: {
+                        'neon': '0 0 25px rgba(106, 0, 255, 0.4)',
+                    }
+                }
+            }
+        }
+    </script>
+
+    <!-- Custom CSS -->
+    <style>
+        body {
+            background-color: #050505;
+            color: white;
+            overflow-x: hidden;
+        }
+        
+        /* 3D Canvas */
+        #hero-canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+        }
+
+        /* Gradient Text */
+        .text-gradient {
+            background: linear-gradient(to right, #ffffff, #a875ff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        /* ---------------------
+           OPAQUE CARD STACK
+        ---------------------- */
+        .card-stack-container {
+            position: relative;
+            width: 300px;
+            height: 400px;
+            margin: 0 auto;
+            perspective: 1000px;
+        }
+
+        .stack-card {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: #1A1A1A; /* SOLID COLOR */
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 1rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+            transition: transform 0.5s cubic-bezier(0.25, 0.8, 0.25, 1), opacity 0.3s;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.9); /* Strong shadow to mask cards behind */
+            z-index: 1;
+        }
+
+        /* Top Card */
+        .stack-card.active {
+            opacity: 1;
+            transform: translateX(0) rotate(0) scale(1);
+            z-index: 10;
+            border-color: #6A00FF;
+            box-shadow: 0 0 20px rgba(106, 0, 255, 0.2);
+        }
+
+        /* Exiting Card */
+        .stack-card.swiping {
+            transform: translateX(150px) rotate(15deg) scale(0.9);
+            opacity: 1; /* Stay opaque while moving */
+            z-index: 20;
+        }
+
+        /* Background Cards */
+        .stack-card.waiting {
+            transform: translateY(15px) scale(0.96);
+            z-index: 5;
+            background-color: #141414;
+        }
+        .stack-card.waiting-2 {
+            transform: translateY(30px) scale(0.92);
+            z-index: 2;
+            background-color: #0F0F0F;
+        }
+
+        /* ---------------------
+           PROLINK ANIMATION STYLES
+        ---------------------- */
+        .split-text-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            height: 100%;
+            position: relative;
+        }
+        
+        /* Default: Stacked vertically on mobile */
+        .split-part {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            transition: none; /* GSAP handles this */
+        }
+
+        .split-desc {
+            opacity: 0; /* Hidden initially */
+            position: absolute;
+            width: 300px;
+            text-align: center;
+            font-family: 'Inter', sans-serif;
+            font-size: 1rem;
+            color: #9CA3AF;
+        }
+
+        .split-desc strong {
+            display: block;
+            color: #6A00FF;
+            font-size: 1.5rem;
+            font-family: 'Space Grotesk', sans-serif;
+            margin-bottom: 0.25rem;
+            text-transform: uppercase;
+        }
+
+    </style>
+</head>
+<body class="antialiased">
+
+    <!-- 1. HERO SECTION -->
+    <section class="relative min-h-screen flex items-center justify-center overflow-hidden pt-20 pb-10">
+        <canvas id="hero-canvas"></canvas>
+        <div class="absolute inset-0 bg-gradient-to-b from-transparent via-proBlack/60 to-proBlack z-0 pointer-events-none"></div>
+
+        <div class="relative z-10 text-center px-4 max-w-4xl mx-auto">
+            <div class="inline-block px-4 py-1 border border-proPurple/50 rounded-full bg-proPurple/10 text-proPurple text-xs md:text-sm font-medium mb-6 backdrop-blur-md">
+                Top 1% Student Talent
+            </div>
+            <h1 class="text-5xl md:text-8xl font-display font-bold leading-[1.1] mb-6 tracking-tight">
+                Professional Work.<br>
+                <span class="text-gradient">Student Pricing.</span>
+            </h1>
+            <p class="text-gray-400 text-base md:text-xl mb-10 max-w-xl mx-auto leading-relaxed">
+                Hire vetted students who deliver agency-grade work. Save on costs while empowering the next generation.
+            </p>
+            <div class="flex justify-center">
+                <a href="clientlog.html" class="group relative inline-flex items-center justify-center px-8 py-4 text-lg font-bold text-white transition-all duration-200 bg-proPurple font-display rounded-xl focus:outline-none hover:bg-[#5500cc] hover:scale-105 shadow-neon">
+                    Get Started
+                    <i class="fa-solid fa-arrow-right ml-2 group-hover:translate-x-1 transition-transform"></i>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- 2. TRUST BADGES -->
+    <div class="border-y border-white/5 bg-proCard/50 backdrop-blur-md py-6 relative z-20">
+        <div class="max-w-7xl mx-auto px-4">
+            <div class="flex flex-wrap justify-center gap-x-8 gap-y-4 text-gray-400 text-xs md:text-sm font-medium uppercase tracking-wider">
+                <span class="flex items-center"><i class="fa-solid fa-check text-proPurple mr-2"></i> Vetted Talent</span>
+                <span class="flex items-center"><i class="fa-solid fa-check text-proPurple mr-2"></i> Secure Escrow</span>
+                <span class="flex items-center"><i class="fa-solid fa-check text-proPurple mr-2"></i> Fast Turnaround</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- 3. SERVICES (Card Shuffle Effect - OPAQUE) -->
+    <section class="py-24 bg-proBlack relative border-t border-white/5">
+        <div class="max-w-7xl mx-auto px-6 flex flex-col md:flex-row items-center justify-between gap-12">
+            <!-- Text Side -->
+            <div class="md:w-1/2 text-center md:text-left">
+                <h2 class="text-4xl md:text-6xl font-display font-bold mb-6">
+                    Everything You<br>Need Done.
+                </h2>
+                <p class="text-gray-400 text-lg mb-8">
+                    From complex coding to creative design, our talent pool covers every digital domain.
+                </p>
+                <div class="flex flex-wrap gap-3 justify-center md:justify-start">
+                    <span class="px-3 py-1 rounded-full bg-white/5 border border-white/10 text-sm text-gray-300">Web Dev</span>
+                    <span class="px-3 py-1 rounded-full bg-white/5 border border-white/10 text-sm text-gray-300">Mobile Apps</span>
+                    <span class="px-3 py-1 rounded-full bg-white/5 border border-white/10 text-sm text-gray-300">Branding</span>
+                    <span class="px-3 py-1 rounded-full bg-white/5 border border-white/10 text-sm text-gray-300">AI & Data</span>
+                </div>
+            </div>
+            <!-- Animation Side -->
+            <div class="md:w-1/2 w-full flex justify-center">
+                <div class="card-stack-container" id="cardStack"></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 4. WORKFLOW (Updated) -->
+    <section class="py-20 bg-[#0a0a0a] border-t border-white/5">
+        <div class="max-w-7xl mx-auto px-6">
+            <h2 class="text-3xl font-display font-bold text-center mb-16">Simple Workflow</h2>
+            <div class="relative">
+                <!-- Connecting Line (Desktop only) -->
+                <div class="hidden md:block absolute top-[24px] left-0 w-full h-0.5 bg-gray-800 -z-10"></div>
+                
+                <div class="grid grid-cols-1 md:grid-cols-5 gap-8 md:gap-4">
+                    <!-- Step 1 -->
+                    <div class="flex md:flex-col items-center gap-4 md:gap-0 text-left md:text-center group">
+                        <div class="w-12 h-12 rounded-full bg-proPurple flex items-center justify-center font-bold text-white shrink-0 shadow-neon z-10 border-4 border-[#0a0a0a]">1</div>
+                        <div class="md:mt-4">
+                            <h4 class="font-bold text-white">Post Request</h4>
+                            <p class="text-xs text-gray-400">Define your project</p>
+                        </div>
+                    </div>
+                    <!-- Step 2 -->
+                    <div class="flex md:flex-col items-center gap-4 md:gap-0 text-left md:text-center group">
+                        <div class="w-12 h-12 rounded-full bg-[#151515] border border-gray-700 flex items-center justify-center font-bold text-white shrink-0 z-10 border-4 border-[#0a0a0a]">2</div>
+                        <div class="md:mt-4">
+                            <h4 class="font-bold text-white">Students Apply</h4>
+                            <p class="text-xs text-gray-400">Review top talent</p>
+                        </div>
+                    </div>
+                    <!-- Step 3 -->
+                    <div class="flex md:flex-col items-center gap-4 md:gap-0 text-left md:text-center group">
+                        <div class="w-12 h-12 rounded-full bg-[#151515] border border-gray-700 flex items-center justify-center font-bold text-white shrink-0 z-10 border-4 border-[#0a0a0a]">3</div>
+                        <div class="md:mt-4">
+                            <h4 class="font-bold text-white">Approve Student</h4>
+                            <p class="text-xs text-gray-400">Select & start</p>
+                        </div>
+                    </div>
+                    <!-- Step 4 -->
+                    <div class="flex md:flex-col items-center gap-4 md:gap-0 text-left md:text-center group">
+                        <div class="w-12 h-12 rounded-full bg-[#151515] border border-gray-700 flex items-center justify-center font-bold text-white shrink-0 z-10 border-4 border-[#0a0a0a]">4</div>
+                        <div class="md:mt-4">
+                            <h4 class="font-bold text-white">Work</h4>
+                            <p class="text-xs text-gray-400">Track progress</p>
+                        </div>
+                    </div>
+                    <!-- Step 5 -->
+                    <div class="flex md:flex-col items-center gap-4 md:gap-0 text-left md:text-center group">
+                        <div class="w-12 h-12 rounded-full bg-[#151515] border border-gray-700 flex items-center justify-center font-bold text-white shrink-0 z-10 border-4 border-[#0a0a0a]">5</div>
+                        <div class="md:mt-4">
+                            <h4 class="font-bold text-white">Receive Work</h4>
+                            <p class="text-xs text-gray-400">Approve & pay</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 5. PROLINK ANIMATION (FIXED & ROBUST) -->
+    <section class="h-[70vh] bg-black relative overflow-hidden flex flex-col justify-center">
+        <div id="split-trigger" class="w-full h-full flex flex-col md:flex-row items-center justify-center relative">
+            
+            <!-- PRO SECTION -->
+            <div id="part-pro" class="split-part z-20">
+                <h2 class="text-8xl md:text-[10rem] font-display font-bold text-white leading-none">Pro</h2>
+                <!-- Description positioned absolutely relative to this word -->
+                <div id="info-pro" class="split-desc">
+                    <strong>Professional</strong>
+                    Agency-grade standards
+                </div>
+            </div>
+
+            <!-- LINK SECTION -->
+            <div id="part-link" class="split-part z-20">
+                <h2 class="text-8xl md:text-[10rem] font-display font-bold text-white leading-none">Link</h2>
+                <!-- Description positioned absolutely relative to this word -->
+                <div id="info-link" class="split-desc">
+                    <strong>Connection</strong>
+                    Direct student access
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer class="bg-[#050505] py-8 text-center border-t border-white/5">
+        <div class="text-2xl font-bold font-display mb-2">ProLink</div>
+        <p class="text-gray-600 text-xs">© 2023 ProLink. Connecting the Future.</p>
+    </footer>
+
+    <!-- SCRIPTS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+
+    <script>
+        // 1. HERO THREE.JS (Wireframe Sphere)
+        const initHero = () => {
+            const canvas = document.getElementById('hero-canvas');
+            if(!canvas) return;
+            
+            const scene = new THREE.Scene();
+            scene.fog = new THREE.FogExp2(0x050505, 0.002);
+            
+            const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+            const renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: true });
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            renderer.setPixelRatio(window.devicePixelRatio);
+
+            const geo = new THREE.IcosahedronGeometry(9, 1);
+            const mat = new THREE.MeshBasicMaterial({ color: 0x6A00FF, wireframe: true, transparent: true, opacity: 0.15 });
+            const mesh = new THREE.Mesh(geo, mat);
+            scene.add(mesh);
+            camera.position.z = 20;
+
+            const animate = () => {
+                requestAnimationFrame(animate);
+                mesh.rotation.y += 0.001;
+                mesh.rotation.x += 0.0005;
+                renderer.render(scene, camera);
+            };
+            animate();
+
+            window.addEventListener('resize', () => {
+                camera.aspect = window.innerWidth / window.innerHeight;
+                camera.updateProjectionMatrix();
+                renderer.setSize(window.innerWidth, window.innerHeight);
+            });
+        };
+        initHero();
+
+        // 2. OPAQUE CARD SHUFFLE
+        const stackData = [
+            { icon: 'fa-code', t: 'Web Dev', d: 'React, Node, Tailwind' },
+            { icon: 'fa-pen-nib', t: 'Design', d: 'UI/UX, Logos, Branding' },
+            { icon: 'fa-mobile-screen', t: 'App Dev', d: 'Flutter, iOS, Android' },
+            { icon: 'fa-video', t: 'Video', d: 'Editing, Motion Graphics' },
+            { icon: 'fa-robot', t: 'AI & ML', d: 'Python, Integration' }
+        ];
+
+        const container = document.getElementById('cardStack');
+        
+        // Render Initial Cards
+        stackData.forEach((item, idx) => {
+            const el = document.createElement('div');
+            let cls = 'stack-card';
+            if (idx === 0) cls += ' active';
+            else if (idx === 1) cls += ' waiting';
+            else cls += ' waiting-2';
+            
+            // Hide extra cards initially
+            if (idx > 2) el.style.opacity = '0';
+            
+            el.className = cls;
+            el.innerHTML = `
+                <i class="fa-solid ${item.icon} text-5xl text-proPurple mb-4"></i>
+                <h3 class="text-2xl font-bold font-display text-white mb-2">${item.t}</h3>
+                <p class="text-gray-400 text-center text-sm">${item.d}</p>
+            `;
+            container.appendChild(el);
+        });
+
+        // Loop Logic
+        setInterval(() => {
+            const cards = Array.from(container.children);
+            if(cards.length < 2) return;
+            
+            const top = cards[0];
+            const next = cards[1];
+            const third = cards[2];
+            const fourth = cards[3]; // The hidden one coming up
+
+            // Animate Top Away
+            top.classList.remove('active');
+            top.classList.add('swiping');
+
+            // Promote Next
+            if(next) {
+                next.classList.remove('waiting');
+                next.classList.add('active');
+            }
+            // Promote Third
+            if(third) {
+                third.classList.remove('waiting-2');
+                third.classList.add('waiting');
+            }
+            // Prepare Fourth (Make visible and put in back queue)
+            if(fourth) {
+                fourth.style.opacity = '1';
+                fourth.classList.add('waiting-2');
+            }
+
+            // DOM Manipulation after animation
+            setTimeout(() => {
+                top.classList.remove('swiping');
+                top.classList.add('waiting-2');
+                top.style.opacity = '0'; // Hide it at the back
+                container.appendChild(top); // Move to end of list
+            }, 450);
+
+        }, 700); // 0.7s cycle
+
+        // 3. GSAP SPLIT ANIMATION (Robust)
+        gsap.registerPlugin(ScrollTrigger);
+        let mm = gsap.matchMedia();
+
+        mm.add("(min-width: 768px)", () => {
+            // --- DESKTOP (Horizontal Split) ---
+            // 1. Set initial positions (Center)
+            gsap.set("#part-pro", { x: 0, y: 0 });
+            gsap.set("#part-link", { x: 0, y: 0 });
+            
+            // 2. Set text positions (Outside)
+            gsap.set("#info-pro", { x: -200, y: 0, opacity: 0, right: '100%', top: '50%', yPercent: -50 });
+            gsap.set("#info-link", { x: 200, y: 0, opacity: 0, left: '100%', top: '50%', yPercent: -50 });
+
+            const tl = gsap.timeline({
+                scrollTrigger: {
+                    trigger: "#split-trigger",
+                    start: "top 60%",
+                    end: "bottom 20%",
+                    toggleActions: "play reverse play reverse"
+                }
+            });
+
+            tl.to("#part-pro", { x: -50, color: '#6A00FF', duration: 0.8, ease: "power2.out" }, "move")
+              .to("#part-link", { x: 50, textShadow: '0 0 30px #6A00FF', duration: 0.8, ease: "power2.out" }, "move")
+              .to("#info-pro", { x: -20, opacity: 1, duration: 0.6 }, "-=0.4")
+              .to("#info-link", { x: 20, opacity: 1, duration: 0.6 }, "<");
+        });
+
+        mm.add("(max-width: 767px)", () => {
+            // --- MOBILE (Vertical Split) ---
+            // 1. Set initial positions
+            gsap.set("#part-pro", { x: 0, y: 0 });
+            gsap.set("#part-link", { x: 0, y: 0 });
+
+            // 2. Set text positions (Top and Bottom of the stack)
+            // info-pro goes ABOVE the word Pro
+            gsap.set("#info-pro", { y: 20, opacity: 0, bottom: '100%', left: '50%', xPercent: -50 });
+            // info-link goes BELOW the word Link
+            gsap.set("#info-link", { y: -20, opacity: 0, top: '100%', left: '50%', xPercent: -50 });
+
+            const tl = gsap.timeline({
+                scrollTrigger: {
+                    trigger: "#split-trigger",
+                    start: "top 60%",
+                    end: "bottom 20%",
+                    toggleActions: "play reverse play reverse"
+                }
+            });
+
+            tl.to("#part-pro", { y: -30, color: '#6A00FF', duration: 0.8, ease: "power2.out" }, "move")
+              .to("#part-link", { y: 30, textShadow: '0 0 20px #6A00FF', duration: 0.8, ease: "power2.out" }, "move")
+              .to("#info-pro", { y: -10, opacity: 1, duration: 0.6 }, "-=0.4")
+              .to("#info-link", { y: 10, opacity: 1, duration: 0.6 }, "<");
+        });
+
+    </script>
+</body>
+</html>

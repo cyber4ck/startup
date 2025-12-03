@@ -1,0 +1,585 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ProLink | The Professional Ecosystem</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&family=Space+Grotesk:wght@400;600;700&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        :root {
+            --bg-black: #030305;
+            --primary-light: #e9d5ff;
+            --accent-purple: #d8b4fe;
+            --neon-purple: #a855f7;
+            --glass-border: rgba(216, 180, 254, 0.15);
+            --glass-bg: rgba(15, 15, 25, 0.7);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            background-color: var(--bg-black);
+            color: var(--primary-light);
+            font-family: 'Inter', sans-serif;
+            overflow-x: hidden;
+        }
+
+        /* --- Backgrounds --- */
+        #universe-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -2;
+        }
+
+        /* --- FLYING ROBOT --- */
+        .robot-container {
+            position: fixed;
+            width: 120px; /* Small size */
+            z-index: 5; /* Above content */
+            pointer-events: none;
+            filter: drop-shadow(0 0 20px rgba(168, 85, 247, 0.5));
+            /* Complex flight path animation */
+            animation: spacePatrol 25s linear infinite;
+        }
+        .robot-img { width: 100%; height: auto; }
+
+        /* Robot Flight Path: Enters/Exits from different sides */
+        @keyframes spacePatrol {
+            0% { top: 10%; left: -15%; transform: rotate(15deg); } /* Enter Left */
+            20% { top: 15%; left: 30%; transform: rotate(5deg); }
+            40% { top: 5%; left: 110%; transform: rotate(0deg); } /* Exit Right */
+            41% { top: 80%; left: 110%; transform: scaleX(-1) rotate(5deg); } /* Flip to face left, Move Bottom */
+            60% { top: 70%; left: 50%; transform: scaleX(-1) rotate(-5deg); }
+            80% { top: 85%; left: -15%; transform: scaleX(-1) rotate(-10deg); } /* Exit Left Bottom */
+            81% { top: -15%; left: 80%; transform: rotate(180deg); } /* Move Top Right, Upside down slightly */
+            100% { top: 110%; left: 60%; transform: rotate(160deg); } /* Exit Bottom */
+        }
+
+        /* --- Navigation --- */
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 5%;
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+            background: rgba(3, 3, 5, 0.85);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid var(--glass-border);
+        }
+
+        .logo {
+            font-family: 'Space Grotesk', sans-serif;
+            font-weight: 700;
+            font-size: 1.6rem;
+            letter-spacing: -1px;
+            color: #fff;
+        }
+        .logo span { color: var(--neon-purple); }
+
+        .nav-links { display: flex; gap: 40px; }
+        .nav-links a {
+            color: #9ca3af;
+            text-decoration: none;
+            font-size: 0.9rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-family: 'Space Grotesk', sans-serif;
+            transition: 0.3s;
+        }
+        .nav-links a:hover { color: var(--accent-purple); }
+        .menu-toggle { display: none; font-size: 1.5rem; cursor: pointer; color: white; }
+
+        /* --- Hero Section --- */
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 120px 20px 50px 20px;
+            position: relative;
+        }
+
+        h1 {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 5rem;
+            line-height: 1.1;
+            font-weight: 700;
+            margin-bottom: 25px;
+            letter-spacing: -2px;
+        }
+
+        .gradient-text {
+            background: linear-gradient(90deg, #ffffff 0%, #e9d5ff 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .highlight-text {
+            color: var(--accent-purple);
+            text-shadow: 0 0 30px rgba(168, 85, 247, 0.5);
+        }
+
+        .hero p {
+            font-size: 1.2rem;
+            color: #d1d5db;
+            max-width: 750px;
+            line-height: 1.7;
+            margin-bottom: 50px;
+        }
+
+        .cta-group { display: flex; gap: 20px; flex-wrap: wrap; justify-content: center; }
+
+        .btn {
+            padding: 16px 45px;
+            border-radius: 50px;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            font-family: 'Space Grotesk', sans-serif;
+        }
+        .btn-primary {
+            background: var(--accent-purple);
+            color: #1a0b2e;
+            box-shadow: 0 0 20px rgba(216, 180, 254, 0.3);
+        }
+        .btn-primary:hover {
+            background: #fff;
+            transform: translateY(-3px);
+            box-shadow: 0 0 40px rgba(255, 255, 255, 0.5);
+        }
+
+        .btn-secondary {
+            border: 1px solid rgba(255,255,255,0.3);
+            color: white;
+            backdrop-filter: blur(5px);
+        }
+        .btn-secondary:hover {
+            border-color: var(--accent-purple);
+            color: var(--accent-purple);
+        }
+
+        /* --- Marquee --- */
+        .marquee-wrapper {
+            width: 100%;
+            padding: 20px 0;
+            background: rgba(255, 255, 255, 0.02);
+            border-top: 1px solid var(--glass-border);
+            border-bottom: 1px solid var(--glass-border);
+            margin-top: 80px;
+            overflow: hidden;
+        }
+        .marquee-track {
+            display: flex;
+            gap: 60px;
+            width: max-content;
+            animation: slide 40s linear infinite;
+        }
+        .service-pill {
+            color: #e9d5ff;
+            font-size: 1.1rem;
+            font-family: 'Space Grotesk', sans-serif;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .dot {
+            width: 6px;
+            height: 6px;
+            background: var(--neon-purple);
+            border-radius: 50%;
+            box-shadow: 0 0 10px var(--neon-purple);
+        }
+        @keyframes slide { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
+
+        /* --- Animation Section --- */
+        .animation-section {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 100px 20px 150px 20px;
+            position: relative;
+        }
+
+        /* 1. Split Text */
+        .splitter-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 7rem;
+            font-weight: 700;
+            margin-bottom: 30px;
+            width: 100%;
+            height: 150px;
+        }
+
+        .word-left, .word-right {
+            display: inline-block;
+            transition: transform 1.2s cubic-bezier(0.25, 1, 0.5, 1);
+        }
+        .word-left { color: #fff; }
+        .word-right {
+            color: var(--neon-purple);
+            text-shadow: 0 0 40px rgba(168, 85, 247, 0.4);
+        }
+        /* Adjusted desktop split */
+        .splitter-container.active .word-left { transform: translateX(-80px); }
+        .splitter-container.active .word-right { transform: translateX(80px); }
+
+        /* 2. Typing Columns (Pro vs Link) */
+        .definitions-row {
+            display: flex;
+            justify-content: center;
+            width: 100%;
+            max-width: 1000px;
+            gap: 250px;
+            margin-bottom: 60px;
+        }
+        .def-col {
+            width: 300px;
+            text-align: center;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.95rem;
+            color: #a1a1aa;
+            opacity: 0;
+            transition: opacity 0.5s;
+            min-height: 60px;
+        }
+        .def-col.visible { opacity: 1; }
+
+        .typing-cursor::after {
+            content: '█';
+            animation: blink 1s infinite;
+            color: var(--neon-purple);
+            font-size: 0.8em;
+            margin-left: 2px;
+        }
+        @keyframes blink { 50% { opacity: 0; } }
+
+        /* 3. Full Meaning Box (ProLink) */
+        .full-def-card {
+            max-width: 800px;
+            width: 100%;
+            background: linear-gradient(145deg, rgba(30, 10, 50, 0.7) 0%, rgba(10, 10, 20, 0.8) 100%);
+            border: 1px solid var(--neon-purple);
+            border-radius: 20px;
+            padding: 40px;
+            text-align: center;
+            backdrop-filter: blur(15px);
+            box-shadow: 0 0 40px rgba(168, 85, 247, 0.2);
+            opacity: 0;
+            transform: translateY(40px);
+            transition: all 1s ease-out;
+        }
+        .full-def-card.visible { opacity: 1; transform: translateY(0); }
+
+        .def-title {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 2.5rem;
+            color: #fff;
+            margin-bottom: 15px;
+        }
+        .def-title span { color: var(--neon-purple); }
+
+        .def-body {
+            font-size: 1.1rem;
+            line-height: 1.6;
+            color: #e9d5ff;
+        }
+
+        /* --- Footer / Instagram --- */
+        .footer-insta {
+            margin-top: 60px;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            padding: 12px 30px;
+            border-radius: 50px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: white;
+            text-decoration: none;
+            font-family: 'Space Grotesk', sans-serif;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(5px);
+        }
+        .footer-insta:hover {
+            background: var(--neon-purple);
+            box-shadow: 0 0 25px var(--neon-purple);
+            transform: translateY(-3px);
+        }
+        .insta-icon { font-size: 1.2rem; }
+
+        /* --- Responsive --- */
+        @media (max-width: 900px) {
+            h1 { font-size: 3rem; }
+
+            /* Animation Fixes */
+            .splitter-container {
+                font-size: 4rem;
+                height: 100px; /* Adjusted height for mobile */
+            }
+            /* Use viewport units for a responsive split */
+            .splitter-container.active .word-left { transform: translateX(-15vw); }
+            .splitter-container.active .word-right { transform: translateX(15vw); }
+
+            .definitions-row {
+                flex-direction: column;
+                gap: 20px; /* Reduced vertical gap */
+                align-items: center;
+            }
+            .def-col { width: 90%; }
+
+            /* Navigation Fixes */
+            .nav-links { display: none; }
+            .menu-toggle { display: block; }
+
+            .nav-links.active {
+                display: flex;
+                flex-direction: column;
+                position: absolute;
+                top: 61px; /* Below the main nav bar */
+                left: 0;
+                width: 100%;
+                background: rgba(3, 3, 5, 0.95);
+                border-top: 1px solid var(--glass-border);
+                padding: 20px;
+                box-shadow: 0 10px 20px rgba(0,0,0,0.5);
+                z-index: 999; /* Ensure it's above other content */
+            }
+
+            .nav-links.active a {
+                padding: 10px 0;
+                border-bottom: 1px solid rgba(255,255,255,0.1);
+            }
+            .nav-links.active a:last-child {
+                border-bottom: none;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <canvas id="universe-bg"></canvas>
+
+    <div class="robot-container">
+        <img src="robot.png" alt="Robot" class="robot-img">
+    </div>
+
+    <nav>
+        <div class="logo">Pro<span>Link</span></div>
+        <div class="menu-toggle">☰</div>
+        <div class="nav-links">
+            <a href="students.html">For Students</a>
+            <a href="client.html">For Clients</a>
+            <a href="ourmission.html">Our Mission</a>
+        </div>
+    </nav>
+
+    <section class="hero">
+        <h1>
+            <span class="gradient-text">Bridging Campus Talent</span><br>
+            <span class="highlight-text">with Industry Needs</span>
+        </h1>
+        <p>
+            We are building India's first professional ecosystem where vetted university students deliver agency-quality work for startups and SMEs. Real projects. Real experience.
+        </p>
+        <div class="cta-group">
+            <a href="clientlog.html" class="btn btn-primary">Hire Top Talent</a>
+            <a href="stdlog.html" class="btn btn-secondary">Apply as Student</a>
+        </div>
+
+        <div class="marquee-wrapper">
+            <div class="marquee-track">
+                <div class="service-pill"><div class="dot"></div>Web Development</div>
+                <div class="service-pill"><div class="dot"></div>UI/UX Design</div>
+                <div class="service-pill"><div class="dot"></div>Content Writing</div>
+                <div class="service-pill"><div class="dot"></div>Video Editing</div>
+                <div class="service-pill"><div class="dot"></div>Social Media</div>
+                <div class="service-pill"><div class="dot"></div>SEO Optimization</div>
+                <div class="service-pill"><div class="dot"></div>Web Development</div>
+                <div class="service-pill"><div class="dot"></div>UI/UX Design</div>
+                <div class="service-pill"><div class="dot"></div>Content Writing</div>
+            </div>
+        </div>
+    </section>
+
+    <section class="animation-section" id="anim-trigger">
+
+        <div class="splitter-container" id="splitter">
+            <div class="word-left">Pro</div>
+            <div class="word-right">Link</div>
+        </div>
+
+        <div class="definitions-row">
+            <div class="def-col" id="def-pro-box">
+                <span id="type-pro" class="typing-cursor"></span>
+            </div>
+            <div class="def-col" id="def-link-box">
+                <span id="type-link" class="typing-cursor"></span>
+            </div>
+        </div>
+
+        <div class="full-def-card" id="full-content">
+            <div class="def-title">ProLink →</div>
+            <div class="def-body">
+                Where clients and student professionals collaborate to create high-quality work.
+            </div>
+        </div>
+
+        <a href="https://instagram.com" target="_blank" class="footer-insta">
+            <i class="fa-brands fa-instagram insta-icon"></i>
+            Follow us on Insta
+        </a>
+
+    </section>
+
+    <script type="module">
+        import * as THREE from 'https://unpkg.com/three@0.160.0/build/three.module.js';
+
+        /* ==========================================
+           0. MOBILE MENU TOGGLE LOGIC (NEW)
+           ========================================== */
+        const menuToggle = document.querySelector('.menu-toggle');
+        const navLinks = document.querySelector('.nav-links');
+
+        menuToggle.addEventListener('click', () => {
+            navLinks.classList.toggle('active');
+        });
+
+
+        /* ==========================================
+           1. TEXT ANIMATION LOGIC
+           ========================================== */
+        const triggerSection = document.getElementById('anim-trigger');
+        const splitter = document.getElementById('splitter');
+        const defProBox = document.getElementById('def-pro-box');
+        const defLinkBox = document.getElementById('def-link-box');
+        const fullContent = document.getElementById('full-content');
+
+        // Typewriter Utility
+        function typeWriter(elementId, text, speed) {
+            let i = 0;
+            const elem = document.getElementById(elementId);
+            elem.innerHTML = "";
+            function type() {
+                if (i < text.length) {
+                    elem.innerHTML += text.charAt(i);
+                    i++;
+                    setTimeout(type, speed);
+                } else {
+                    elem.classList.remove('typing-cursor');
+                }
+            }
+            type();
+        }
+
+        // Sequence Trigger
+        let hasAnimated = false;
+        const observer = new IntersectionObserver((entries) => {
+            if(entries[0].isIntersecting && !hasAnimated) {
+                hasAnimated = true;
+
+                // Step 1: Split Words
+                setTimeout(() => splitter.classList.add('active'), 300);
+
+                // Step 2: Reveal Boxes & Type Definitions
+                setTimeout(() => {
+                    defProBox.classList.add('visible');
+                    defLinkBox.classList.add('visible');
+
+                    // Exact Text Requested
+                    typeWriter('type-pro', "Professional-level student talent.", 50);
+                    typeWriter('type-link', "Connecting clients & creators.", 50);
+                }, 1600);
+
+                // Step 3: Show Combined Definition
+                setTimeout(() => {
+                    fullContent.classList.add('visible');
+                }, 4500);
+            }
+        }, { threshold: 0.3 });
+
+        observer.observe(triggerSection);
+
+        /* ==========================================
+           2. THREE.JS STARFIELD BACKGROUND
+           ========================================== */
+        const canvas = document.getElementById('universe-bg');
+        const scene = new THREE.Scene();
+        const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+        const renderer = new THREE.WebGLRenderer({ canvas: canvas, alpha: true });
+
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+
+        const particlesGeometry = new THREE.BufferGeometry();
+        const particlesCount = 1500;
+        const posArray = new Float32Array(particlesCount * 3);
+        for(let i = 0; i < particlesCount * 3; i++) {
+            posArray[i] = (Math.random() - 0.5) * 80;
+        }
+        particlesGeometry.setAttribute('position', new THREE.BufferAttribute(posArray, 3));
+        const material = new THREE.PointsMaterial({
+            size: 0.09,
+            color: 0xd8b4fe,
+            transparent: true,
+            opacity: 0.8,
+        });
+        const particlesMesh = new THREE.Points(particlesGeometry, material);
+        scene.add(particlesMesh);
+        camera.position.z = 20;
+
+        // Mouse Interaction
+        let mouseX = 0, mouseY = 0;
+        document.addEventListener('mousemove', (e) => {
+            mouseX = e.clientX / window.innerWidth - 0.5;
+            mouseY = e.clientY / window.innerHeight - 0.5;
+        });
+
+        function animate() {
+            particlesMesh.rotation.y += 0.0005; // Constant spin
+            particlesMesh.rotation.x = mouseY * 0.1;
+            particlesMesh.rotation.y += mouseX * 0.1;
+            renderer.render(scene, camera);
+            requestAnimationFrame(animate);
+        }
+        animate();
+
+        window.addEventListener('resize', () => {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        });
+    </script><script>	// <![CDATA[  <-- For SVG support	if ('WebSocket' in window) {		(function () {			function refreshCSS() {				var sheets = [].slice.call(document.getElementsByTagName("link"));				var head = document.getElementsByTagName("head")[0];				for (var i = 0; i < sheets.length; ++i) {					var elem = sheets[i];					var parent = elem.parentElement || head;					parent.removeChild(elem);					var rel = elem.rel;					if (elem.href && typeof rel != "string" || rel.length == 0 || rel.toLowerCase() == "stylesheet") {						var url = elem.href.replace(/(&|\?)_cacheOverride=\d+/, '');						elem.href = url + (url.indexOf('?') >= 0 ? '&' : '?') + '_cacheOverride=' + (new Date().valueOf());					}					parent.appendChild(elem);				}			}			var protocol = window.location.protocol === 'http:' ? 'ws://' : 'wss://';			var address = protocol + window.location.host + window.location.pathname + '/ws';
+			var socket = new WebSocket(address);
+			socket.onmessage = function (msg) {
+				if (msg.data == 'reload') window.location.reload();
+				else if (msg.data == 'refreshcss') refreshCSS();
+			};
+			if (sessionStorage && !sessionStorage.getItem('IsThisFirstTime_Log_From_LiveServer')) {
+				console.log('Live reload enabled.');
+				sessionStorage.setItem('IsThisFirstTime_Log_From_LiveServer', true);
+			}
+		})();
+	}
+	else {
+		console.error('Upgrade your browser. This Browser is NOT supported WebSocket for Live-Reloading.');
+	}
+	// ]]></script></body>
+</html>

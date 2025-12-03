@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ProLink Mission</title>
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;500;700&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+    
+    <!-- FontAwesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        proPurple: '#6A00FF',
+                        proBlack: '#0A0A0A',
+                        proDark: '#111111',
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        display: ['Space Grotesk', 'sans-serif'],
+                    },
+                    boxShadow: {
+                        'neon': '0 0 20px rgba(106, 0, 255, 0.3)',
+                        'glass': '0 8px 32px 0 rgba(0, 0, 0, 0.5)',
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        body {
+            margin: 0;
+            background-color: #0A0A0A;
+            color: white;
+            overflow-x: hidden;
+        }
+
+        /* Canvas positioning */
+        #mission-canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+        }
+
+        /* Gradient Overlay to ensure text readability */
+        .vignette-overlay {
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(circle at center, rgba(10,10,10,0.7) 0%, rgba(10,10,10,0.95) 80%);
+            z-index: 1;
+            pointer-events: none;
+        }
+
+        /* Glassmorphism Card */
+        .mission-card {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+        }
+        .mission-card:hover {
+            border-color: #6A00FF;
+            transform: translateY(-5px);
+            box-shadow: 0 0 20px rgba(106, 0, 255, 0.2);
+        }
+
+        /* Text Gradients */
+        .text-gradient {
+            background: linear-gradient(to right, #fff, #a875ff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .pro-purple-text {
+            color: #6A00FF;
+            text-shadow: 0 0 15px rgba(106, 0, 255, 0.5);
+        }
+    </style>
+</head>
+<body>
+
+    <section class="relative w-full min-h-screen flex items-center justify-center py-20 overflow-hidden">
+        
+        <!-- 3D Background -->
+        <canvas id="mission-canvas"></canvas>
+        
+        <!-- Darkening Overlay -->
+        <div class="vignette-overlay"></div>
+
+        <!-- Content Container -->
+        <div class="relative z-10 max-w-7xl mx-auto px-6 w-full">
+            
+            <!-- Header Section -->
+            <div class="text-center mb-16 max-w-4xl mx-auto">
+                <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-proPurple/30 bg-proPurple/10 text-proPurple text-xs font-bold tracking-widest uppercase mb-6">
+                    <span class="w-2 h-2 rounded-full bg-proPurple animate-pulse"></span> Our Mission
+                </div>
+                
+                <h1 class="text-4xl md:text-6xl font-display font-bold mb-6 leading-tight">
+                    Connecting <span class="text-gradient">Ambition</span><br>
+                    With <span class="text-gradient">Opportunity.</span>
+                </h1>
+                
+                <p class="text-gray-300 text-lg md:text-xl leading-relaxed font-light">
+                    ProLink bridges talented students with clients seeking affordable, high-quality work through a fast, trusted, tech-driven platform.
+                </p>
+            </div>
+
+            <!-- Main Content Grid -->
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+                
+                <!-- Left: Text Description -->
+                <div class="space-y-8">
+                    <div class="border-l-4 border-proPurple pl-6">
+                        <p class="text-2xl md:text-3xl font-display font-medium text-white mb-4">
+                            We bridge the gap.
+                        </p>
+                        <p class="text-gray-400 leading-relaxed">
+                            We help students earn real experience while giving clients agency-level results at student-friendly prices. ProLink makes talent, creativity, and opportunity meet seamlessly.
+                        </p>
+                    </div>
+
+                    <!-- Tagline -->
+                    <div class="pt-4">
+                        <h3 class="text-2xl md:text-3xl font-bold pro-purple-text font-display">
+                            "ProLink: Powering Students. Empowering Clients."
+                        </h3>
+                    </div>
+                </div>
+
+                <!-- Right: Highlights Grid -->
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    
+                    <!-- Card 1 -->
+                    <div class="mission-card p-6 rounded-xl group">
+                        <div class="w-10 h-10 rounded-lg bg-proPurple/20 flex items-center justify-center mb-4 group-hover:bg-proPurple transition-colors">
+                            <i class="fa-solid fa-graduation-cap text-proPurple group-hover:text-white"></i>
+                        </div>
+                        <h4 class="text-lg font-bold text-white mb-2">Student Earning</h4>
+                        <p class="text-sm text-gray-400">Real-world projects that build portfolios and income.</p>
+                    </div>
+
+                    <!-- Card 2 -->
+                    <div class="mission-card p-6 rounded-xl group">
+                        <div class="w-10 h-10 rounded-lg bg-proPurple/20 flex items-center justify-center mb-4 group-hover:bg-proPurple transition-colors">
+                            <i class="fa-solid fa-briefcase text-proPurple group-hover:text-white"></i>
+                        </div>
+                        <h4 class="text-lg font-bold text-white mb-2">Affordable Quality</h4>
+                        <p class="text-sm text-gray-400">Agency-grade output accessible for Startups & SMEs.</p>
+                    </div>
+
+                    <!-- Card 3 -->
+                    <div class="mission-card p-6 rounded-xl group">
+                        <div class="w-10 h-10 rounded-lg bg-proPurple/20 flex items-center justify-center mb-4 group-hover:bg-proPurple transition-colors">
+                            <i class="fa-solid fa-bolt text-proPurple group-hover:text-white"></i>
+                        </div>
+                        <h4 class="text-lg font-bold text-white mb-2">Fast Workflow</h4>
+                        <p class="text-sm text-gray-400">Direct communication and transparent milestones.</p>
+                    </div>
+
+                    <!-- Card 4 -->
+                    <div class="mission-card p-6 rounded-xl group">
+                        <div class="w-10 h-10 rounded-lg bg-proPurple/20 flex items-center justify-center mb-4 group-hover:bg-proPurple transition-colors">
+                            <i class="fa-solid fa-star text-proPurple group-hover:text-white"></i>
+                        </div>
+                        <h4 class="text-lg font-bold text-white mb-2">Pro Results</h4>
+                        <p class="text-sm text-gray-400">Vetted talent delivering professional standards.</p>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Three.js Library -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+
+    <script>
+        // --- THREE.JS CONFIGURATION ---
+        const canvas = document.getElementById('mission-canvas');
+        const scene = new THREE.Scene();
+        
+        // Camera setup
+        const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+        camera.position.z = 30;
+
+        // Renderer setup
+        const renderer = new THREE.WebGLRenderer({ canvas: canvas, alpha: true, antialias: true });
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        renderer.setPixelRatio(window.devicePixelRatio);
+
+        // --- CREATE NODES (STUDENTS & CLIENTS) ---
+        
+        const particleCount = 60; // Nodes per side
+        const leftGroup = new THREE.Group(); // Students
+        const rightGroup = new THREE.Group(); // Clients
+        scene.add(leftGroup);
+        scene.add(rightGroup);
+
+        // Material for Nodes
+        const nodeMaterial = new THREE.PointsMaterial({
+            color: 0x6A00FF,
+            size: 0.4,
+            transparent: true,
+            opacity: 0.8
+        });
+
+        // 1. Generate Left Nodes (Students) - Positioned X: -20 to -5
+        const leftGeo = new THREE.BufferGeometry();
+        const leftPos = [];
+        
+        for(let i=0; i<particleCount; i++) {
+            // Random cloud on the left
+            const x = (Math.random() * 15) - 25; 
+            const y = (Math.random() * 20) - 10;
+            const z = (Math.random() * 10) - 5;
+            leftPos.push(x, y, z);
+        }
+        leftGeo.setAttribute('position', new THREE.Float32BufferAttribute(leftPos, 3));
+        const leftParticles = new THREE.Points(leftGeo, nodeMaterial);
+        leftGroup.add(leftParticles);
+
+        // 2. Generate Right Nodes (Clients) - Positioned X: 5 to 20
+        const rightGeo = new THREE.BufferGeometry();
+        const rightPos = [];
+        
+        for(let i=0; i<particleCount; i++) {
+            // Random cloud on the right
+            const x = (Math.random() * 15) + 10; 
+            const y = (Math.random() * 20) - 10;
+            const z = (Math.random() * 10) - 5;
+            rightPos.push(x, y, z);
+        }
+        rightGeo.setAttribute('position', new THREE.Float32BufferAttribute(rightPos, 3));
+        const rightParticles = new THREE.Points(rightGeo, nodeMaterial);
+        rightGroup.add(rightParticles);
+
+
+        // --- CREATE CONNECTIONS & PULSES ---
+
+        const linesMaterial = new THREE.LineBasicMaterial({
+            color: 0x6A00FF,
+            transparent: true,
+            opacity: 0.15
+        });
+
+        const packets = []; // Array to store moving light pulses
+        const packetGeometry = new THREE.SphereGeometry(0.15, 8, 8);
+        const packetMaterial = new THREE.MeshBasicMaterial({ color: 0xFFFFFF });
+
+        // Logic: Connect random Left nodes to random Right nodes
+        const linePoints = [];
+        
+        // Create 30 Connections
+        for(let i=0; i<30; i++) {
+            const leftIndex = Math.floor(Math.random() * particleCount);
+            const rightIndex = Math.floor(Math.random() * particleCount);
+
+            // Get Coordinates
+            const lX = leftPos[leftIndex * 3];
+            const lY = leftPos[leftIndex * 3 + 1];
+            const lZ = leftPos[leftIndex * 3 + 2];
+
+            const rX = rightPos[rightIndex * 3];
+            const rY = rightPos[rightIndex * 3 + 1];
+            const rZ = rightPos[rightIndex * 3 + 2];
+
+            // Add line
+            linePoints.push(new THREE.Vector3(lX, lY, lZ));
+            linePoints.push(new THREE.Vector3(rX, rY, rZ));
+
+            // Create a "Packet" (Pulse) for this line
+            const packet = new THREE.Mesh(packetGeometry, packetMaterial);
+            scene.add(packet);
+            
+            // Store packet data for animation
+            packets.push({
+                mesh: packet,
+                start: new THREE.Vector3(lX, lY, lZ),
+                end: new THREE.Vector3(rX, rY, rZ),
+                progress: Math.random(), // Random start time
+                speed: 0.005 + Math.random() * 0.01 // Random speed
+            });
+        }
+
+        const lineGeo = new THREE.BufferGeometry().setFromPoints(linePoints);
+        const lines = new THREE.LineSegments(lineGeo, linesMaterial);
+        scene.add(lines);
+
+
+        // --- ANIMATION LOOP ---
+        
+        function animate() {
+            requestAnimationFrame(animate);
+
+            // 1. Rotate the Groups slowly for 3D depth
+            leftGroup.rotation.y += 0.001;
+            rightGroup.rotation.y -= 0.001;
+            lines.rotation.y = 0; // Keep lines somewhat static or rotate entire scene? 
+            
+            // Actually, let's rotate the whole scene slightly
+            scene.rotation.y = Math.sin(Date.now() * 0.0005) * 0.1;
+
+            // 2. Animate Packets (The Pulse Effect)
+            packets.forEach(p => {
+                p.progress += p.speed;
+                if(p.progress > 1) p.progress = 0; // Loop
+
+                // Linear Interpolation (Lerp)
+                p.mesh.position.lerpVectors(p.start, p.end, p.progress);
+                
+                // Fade in/out near ends
+                const opacity = Math.sin(p.progress * Math.PI); 
+                p.mesh.scale.setScalar(opacity); 
+            });
+
+            renderer.render(scene, camera);
+        }
+
+        animate();
+
+        // --- RESIZE HANDLER ---
+        window.addEventListener('resize', () => {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        });
+
+    </script>
+</body>
+</html>
